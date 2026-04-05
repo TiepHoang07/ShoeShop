@@ -1,0 +1,22 @@
+import axios from 'axios';
+
+export const apiClient = axios.create({
+  baseURL: 'http://localhost:8080/api', // Spring Boot default development port
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+// A request interceptor automatically attaches the JWT token to EVERYTHING you send.
+apiClient.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
