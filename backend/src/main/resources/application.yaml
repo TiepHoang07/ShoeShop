@@ -1,11 +1,13 @@
 spring:
   application:
     name: ShoeStore
+  config:
+    import: optional:file:./.env[.properties]
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/shoestore
-    username: postgres
-    password: password
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -15,8 +17,10 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        dialect: org.hibernate.dialect.PostgreSQLDialect
 
 jwt:
   secret: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
   expiration: 86400000 # 1 day in ms
+
+server:
+  port: 8081
