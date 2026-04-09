@@ -3,6 +3,7 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import HomePage from './pages/HomePage';
+import DashboardPage from './pages/DashboardPage';
 import { useAuthStore } from './store/authStore';
 
 // Protective Wrapper for authenticated routes
@@ -22,6 +23,13 @@ export default function App() {
         element={
           <ProtectedRoute>
             <HomePage />
+          </ProtectedRoute>
+        } 
+      <Route 
+        path="/dashboard" 
+        element={
+          <ProtectedRoute>
+            <DashboardPage />
           </ProtectedRoute>
         } 
       />

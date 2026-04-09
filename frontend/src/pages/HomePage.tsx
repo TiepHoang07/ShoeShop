@@ -98,7 +98,7 @@ export default function HomePage() {
             <div className="flex items-center gap-4">
               {user?.role === 'SELLER' ? (
                 <button 
-                  onClick={() => alert("Dashboard routing coming soon!")}
+                  onClick={() => navigate('/dashboard')}
                   className="hidden md:flex items-center gap-2 px-4 py-2 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm font-medium transition-colors border border-zinc-700 shadow-xl"
                 >
                   <Plus size={16} /> Add Product
