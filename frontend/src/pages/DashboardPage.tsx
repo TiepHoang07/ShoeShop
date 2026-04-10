@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import { apiClient } from '../api/client';
 import { Plus, Trash2, ArrowLeft, PackageSearch } from 'lucide-react';
-import { ProductDto } from './HomePage';
+import type { ProductDto } from './HomePage';
 
 export default function DashboardPage() {
   const { user } = useAuthStore();
@@ -64,12 +64,9 @@ export default function DashboardPage() {
     }
   };
 
-  const handleDelete = async (id: number) => {
+  const handleDelete = async (_id: number) => {
     if (!window.confirm("Are you sure you want to delete this product?")) return;
     try {
-       // Only the database admin can truly drop it if we didn't expose the endpoint
-       // Our ProductController currently doesn't have a DELETE endpoint built 
-       // but we'll try!
        alert("Delete endpoint was not created in the Java Backend for this tutorial.");
     } catch (error) {
        console.error(error);

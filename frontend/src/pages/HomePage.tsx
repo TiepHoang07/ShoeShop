@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import { apiClient } from '../api/client';
-import { ShoppingCart, LogOut, Plus, Search, Heart } from 'lucide-react';
+import { ShoppingCart, LogOut, Plus, Search, Heart, Package } from 'lucide-react';
 
 export interface ProductDto {
   id: number;
@@ -105,10 +105,13 @@ export default function HomePage() {
                 </button>
               ) : (
                 <div className="flex gap-2">
-                   <button onClick={() => alert("Wishlist routing coming soon!")} className="p-2 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-full transition-all">
+                   <button onClick={() => navigate('/orders')} className="p-2 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-full transition-all" title="Order History">
+                      <Package size={20} />
+                   </button>
+                   <button onClick={() => navigate('/wishlist')} className="p-2 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-full transition-all" title="Wishlist">
                       <Heart size={20} />
                    </button>
-                   <button onClick={() => alert("Cart routing coming soon!")} className="p-2 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-full transition-all">
+                   <button onClick={() => navigate('/cart')} className="p-2 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-full transition-all" title="Cart">
                       <ShoppingCart size={20} />
                    </button>
                 </div>

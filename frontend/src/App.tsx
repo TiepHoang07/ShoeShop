@@ -4,6 +4,9 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import HomePage from './pages/HomePage';
 import DashboardPage from './pages/DashboardPage';
+import CartPage from './pages/CartPage';
+import WishlistPage from './pages/WishlistPage';
+import OrdersPage from './pages/OrdersPage';
 import { useAuthStore } from './store/authStore';
 
 // Protective Wrapper for authenticated routes
@@ -25,11 +28,36 @@ export default function App() {
             <HomePage />
           </ProtectedRoute>
         } 
+      />
       <Route 
         path="/dashboard" 
         element={
           <ProtectedRoute>
             <DashboardPage />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/cart" 
+        element={
+          <ProtectedRoute>
+            <CartPage />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/wishlist" 
+        element={
+          <ProtectedRoute>
+            <WishlistPage />
+          </ProtectedRoute>
+        } 
+      />
+      <Route 
+        path="/orders" 
+        element={
+          <ProtectedRoute>
+            <OrdersPage />
           </ProtectedRoute>
         } 
       />
