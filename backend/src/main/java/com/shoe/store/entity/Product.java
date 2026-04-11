@@ -25,6 +25,9 @@ public class Product {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
     @Column(name = "shoe_size")
     private Double size;
 

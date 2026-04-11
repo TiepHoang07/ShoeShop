@@ -1,0 +1,104 @@
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuthStore } from '../store/authStore';
+import { ShoppingCart, LogOut, Plus, Search, Heart, Package, ArrowLeftRight } from 'lucide-react';
+
+interface NavbarProps {
+  onSearch?: (query: string) => void;
+  searchQuery?: string;
+  setSearchQuery?: (val: string) => void;
+}
+
+export default function Navbar({ onSearch, searchQuery, setSearchQuery }: NavbarProps) {
+  const { user, logout } = useAuthStore();
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (onSearch && searchQuery !== undefined) {
+      onSearch(searchQuery);
+    }
+  };
+
+  return (
+    <nav className="sticky top-0 z-50 border-b border-border bg-surface/80 backdrop-blur-md">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          <h1 className="text-2xl font-bold tracking-tight cursor-pointer text-text" onClick={() => navigate('/')}>
+             Shoe<span className="text-primary">Store</span>
+          </h1>
+          
+          {setSearchQuery && onSearch && (
+            <form onSubmit={handleSearchSubmit} className="hidden md:flex flex-1 max-w-md mx-8 relative">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={18} />
+                <input 
+                  type="text" 
+                  placeholder="Search by shoe type (e.g. Sport, Casual)..." 
+                  className="w-full pl-10 pr-4 py-2 bg-bg border border-border rounded-full focus:outline-none focus:ring-2 focus:ring-primary transition-all text-sm text-text placeholder:text-slate-400"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+            </form>
+          )}
+
+          <div className="relative flex items-center gap-4">
+            {user?.role === 'SELLER' ? (
+              <button 
+                onClick={() => navigate('/dashboard')}
+                className="hidden md:flex items-center gap-2 px-4 py-2 bg-surface hover:bg-slate-50 rounded-lg text-sm font-medium transition-colors border border-border shadow-sm text-text"
+              >
+                <Plus size={16} /> Add Product
+              </button>
+            ) : (
+              <div className="flex gap-2">
+                 <button onClick={() => navigate('/orders')} className="p-2 text-text-muted hover:text-primary hover:bg-primary/10 rounded-full transition-all" title="Order History">
+                    <Package size={20} />
+                 </button>
+                 <button onClick={() => navigate('/wishlist')} className="p-2 text-text-muted hover:text-pink-600 hover:bg-pink-50 rounded-full transition-all" title="Wishlist">
+                    <Heart size={20} />
+                 </button>
+                 <button onClick={() => navigate('/cart')} className="p-2 text-text-muted hover:text-primary hover:bg-primary/10 rounded-full transition-all" title="Cart">
+                    <ShoppingCart size={20} />
+                 </button>
+              </div>
+            )}
+            
+            <div className="h-6 w-px bg-border mx-2"></div>
+            
+            <div className="flex items-center gap-3">
+               <div className="hidden sm:block text-right">
+                  <div className="text-sm font-medium text-text">{user?.name}</div>
+                  <div className="text-xs text-primary font-semibold">{user?.role}</div>
+               </div>
+               <button onClick={() => setIsDropdownOpen(!isDropdownOpen)} className='p-2 text-text-muted hover:text-primary hover:bg-primary/10 rounded-full transition-all' title="Switch Role">
+                <ArrowLeftRight size={20} />
+               </button>
+               <button onClick={logout} className="p-2 text-text-muted hover:text-red-600 hover:bg-red-50 rounded-full transition-all" title="Logout">
+                  <LogOut size={20} />
+               </button>
+            </div>
+            {
+              isDropdownOpen && (
+                <div className="absolute right-0 top-12 mt-2 w-48 bg-surface border border-border rounded-lg shadow-lg flex flex-col">
+                  <div className='p-2 flex items-center justify-center flex-row' title="Switch Role">
+                    <div className='flex items-center gap-2'>
+                      <ArrowLeftRight size={20} />
+                      <p>Switch Role</p>
+                    </div>
+                  </div>
+                  <button className='p-2 text-text-muted hover:text-primary hover:bg-primary/10 rounded-full transition-all' title="Switch Role">
+                    <p>Customer</p>
+                  </button>
+                  <button className='p-2 text-text-muted hover:text-primary hover:bg-primary/10 rounded-full transition-all' title="Switch Role">
+                    <p>Seller</p>
+                  </button>
+                </div>
+              )
+            }
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
+}
