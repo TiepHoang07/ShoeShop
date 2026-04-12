@@ -1,6 +1,12 @@
 spring:
   application:
     name: ShoeStore
+  servlet:
+    multipart:
+      enabled: true
+    filter:
+      multipart:
+        order: -1000
   config:
     import: optional:file:./.env[.properties]
 

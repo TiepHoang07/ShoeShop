@@ -13,6 +13,7 @@ export interface ProductDto {
   size: number;
   price: number;
   quantity: number;
+  imageUrl?: string;
   sellerId: number;
 }
 

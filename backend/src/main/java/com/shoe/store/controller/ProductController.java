@@ -37,10 +37,10 @@ public class ProductController {
     // Secure endpoint: Only logged in Sellers can add products
     @PostMapping
     public ResponseEntity<ProductDto> createProduct(
-            @RequestBody ProductDto productDto,
+            @ModelAttribute ProductDto productDto,
+            @RequestParam("file") org.springframework.web.multipart.MultipartFile file,
             Authentication authentication
     ) {
-        // authentication.getName() returns the email from the JWT
-        return ResponseEntity.ok(productService.createProduct(productDto, authentication.getName()));
+        return ResponseEntity.ok(productService.createProduct(productDto, file, authentication.getName()));
     }
 }

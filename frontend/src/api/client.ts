@@ -2,9 +2,6 @@ import axios from "axios";
 
 export const apiClient = axios.create({
   baseURL: "http://localhost:8081/api",
-  headers: {
-    "Content-Type": "application/json",
-  },
 });
 
 // A request interceptor automatically attaches the JWT token to EVERYTHING you send.

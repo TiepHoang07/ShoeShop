@@ -12,7 +12,7 @@ interface ProductListProps {
 export default function ProductList({ products, userRole, onAddToCart, onAddToWishlist }: ProductListProps) {
   if (products.length === 0) {
     return (
-      <div className="w-full py-20 text-center bg-surface rounded-3xl border border-border flex flex-col items-center justify-center shadow-sm">
+      <div className="w-full py-20 text-center flex flex-col items-center justify-center">
          <div className="w-16 h-16 bg-bg border border-border rounded-full flex items-center justify-center mb-4">
              <Search className="text-text-muted" size={24} />
          </div>
@@ -25,13 +25,21 @@ export default function ProductList({ products, userRole, onAddToCart, onAddToWi
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 xl:gap-8">
       {products.map((product) => (
-        <div key={product.id} className="group bg-surface border border-border rounded-2xl overflow-hidden hover:border-primary/30 hover:shadow-xl transition-all duration-300 flex flex-col">
-          <div className="h-56 bg-bg flex flex-col items-center justify-center relative shadow-inner">
-             <div className="absolute top-4 left-4 px-3 py-1 bg-surface backdrop-blur-md rounded-full text-xs font-semibold text-text uppercase tracking-wider border border-border shadow-sm">
+        <div key={product.id} className="group rounded-2xl overflow-hidden flex flex-col">
+          <div className="h-56 bg-bg flex flex-col items-center justify-center relative shadow-inner overflow-hidden">
+             {product.imageUrl ? (
+               <img 
+                 src={product.imageUrl.startsWith('http') ? product.imageUrl : `http://localhost:8081${product.imageUrl}`} 
+                 alt={product.name} 
+                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+               />
+             ) : (
+               <div className="text-slate-300/50 font-bold text-5xl rotate-[-20deg] select-none group-hover:scale-110 transition-all duration-500">
+                 SHOE
+               </div>
+             )}
+             <div className="absolute top-4 left-4 px-3 py-1 bg-surface backdrop-blur-md rounded-full text-xs font-semibold text-text uppercase tracking-wider border border-border shadow-sm z-10">
                {product.type}
-             </div>
-             <div className="text-slate-300/50 font-bold text-5xl rotate-[-20deg] select-none group-hover:scale-110 transition-all duration-500">
-               SHOE
              </div>
           </div>
           

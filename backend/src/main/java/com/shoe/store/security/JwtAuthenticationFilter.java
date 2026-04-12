@@ -31,7 +31,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
         final String authHeader = request.getHeader("Authorization");
         
+        if (request.getMethod().equals("OPTIONS")) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            System.out.println("DEBUG: No Bearer token found for " + request.getMethod() + " " + request.getRequestURI());
             filterChain.doFilter(request, response);
             return;
         }
@@ -39,6 +45,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             final String jwt = authHeader.substring(7);
             final String userEmail = jwtUtil.extractUsername(jwt);
+            System.out.println("DEBUG: Token found for user: " + userEmail + " on path: " + request.getRequestURI());
 
             if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
@@ -53,10 +60,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                             new WebAuthenticationDetailsSource().buildDetails(request)
                     );
                     SecurityContextHolder.getContext().setAuthentication(authToken);
+                    System.out.println("DEBUG: Authentication successful for: " + userEmail);
+                } else {
+                    System.out.println("DEBUG: Token invalid for: " + userEmail);
                 }
             }
-        } catch (Exception ignored) {
-            // Ignore invalid token and continue; public endpoints remain accessible.
+        } catch (Exception e) {
+            System.out.println("DEBUG: Error processing JWT: " + e.getMessage());
         }
 
         filterChain.doFilter(request, response);

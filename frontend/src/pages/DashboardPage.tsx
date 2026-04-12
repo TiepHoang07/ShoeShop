@@ -4,6 +4,7 @@ import { useAuthStore } from "../store/authStore";
 import { apiClient } from "../api/client";
 import { Plus, Trash2, ArrowLeft, PackageSearch } from "lucide-react";
 import type { ProductDto } from "./HomePage";
+import SellerProductCard from "../components/SellerProductCard";
 
 export default function DashboardPage() {
   const { user } = useAuthStore();
@@ -18,6 +19,7 @@ export default function DashboardPage() {
   const [size, setSize] = useState<number>(42);
   const [price, setPrice] = useState<number>(89.99);
   const [quantity, setQuantity] = useState<number>(10);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -43,19 +45,34 @@ export default function DashboardPage() {
 
   const handleAddProduct = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSubmitting(true);
+    
+    // Diagnostic log
     try {
-      await apiClient.post("/products", {
-        name,
-        type,
-        description,
-        size,
-        price,
-        quantity,
-      });
+        const debugRes = await apiClient.get("/debug/me");
+        console.log("DEBUG: Auth status before upload:", debugRes.data);
+    } catch (e) {
+        console.error("DEBUG: Failed to check auth status", e);
+    }
+
+    setIsSubmitting(true);
+    const formData = new FormData();
+    formData.append("name", name);
+    formData.append("type", type);
+    formData.append("description", description);
+    formData.append("size", size.toString());
+    formData.append("price", price.toString());
+    formData.append("quantity", quantity.toString());
+    
+    if (selectedFile) {
+        formData.append("file", selectedFile);
+    }
+
+    try {
+      await apiClient.post("/products", formData);
       alert("Product created successfully!");
       setName("");
       setDescription("");
+      setSelectedFile(null);
       fetchMyProducts();
     } catch (error) {
       alert("Failed to publish product.");
@@ -176,6 +193,18 @@ export default function DashboardPage() {
                     />
                   </div>
                 </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-text-muted mb-1">
+                    Shoe Image
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+                    className="w-full bg-bg border border-border rounded-xl px-4 py-2 focus:ring-2 focus:ring-primary outline-none transition-all text-text file:mr-4 file:py-1 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/10 file:text-primary hover:file:bg-primary/20"
+                  />
+                </div>
 
                 <div>
                   <label className="block text-sm font-medium text-text-muted mb-1">
@@ -225,44 +254,11 @@ export default function DashboardPage() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {products.map((product) => (
-                  <div
-                    key={product.id}
-                    className="bg-surface border border-border rounded-2xl p-6 flex flex-col hover:border-primary/30 hover:shadow-md transition-all"
-                  >
-                    <div className="flex justify-between items-start mb-3">
-                      <h3 className="font-bold text-xl leading-tight text-text">
-                        {product.name}
-                      </h3>
-                      <div className="px-2 py-1 bg-bg rounded-md text-xs font-semibold text-text-muted border border-border">
-                        {product.type}
-                      </div>
-                    </div>
-                    <p className="text-primary-dark font-black text-2xl mb-4">
-                      ${product.price.toFixed(2)}
-                    </p>
-
-                    <div className="flex items-center justify-between mt-auto pt-4 border-t border-border/50">
-                      <div className="text-sm text-text-muted font-medium">
-                        Size: {product.size} &nbsp;&bull;&nbsp; Stock:{" "}
-                        <span
-                          className={
-                            product.quantity === 0
-                              ? "text-primary"
-                              : "text-primary-dark"
-                          }
-                        >
-                          {product.quantity}
-                        </span>
-                      </div>
-                      <button
-                        onClick={() => handleDelete(product.id)}
-                        className="p-2.5 text-text-muted hover:text-primary-dark hover:bg-primary/10 rounded-xl transition-colors border border-transparent hover:border-primary/30"
-                        title="Delete Product"
-                      >
-                        <Trash2 size={18} />
-                      </button>
-                    </div>
-                  </div>
+                  <SellerProductCard 
+                    key={product.id} 
+                    product={product} 
+                    onDelete={handleDelete} 
+                  />
                 ))}
               </div>
             )}
