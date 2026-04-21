@@ -28,6 +28,12 @@ public class ProductController {
         return ResponseEntity.ok(productService.searchProductsByType(type));
     }
 
+    // Public endpoint: Search products by name
+    @GetMapping("/public/searchByName")
+    public ResponseEntity<List<ProductDto>> searchProductsByName(@RequestParam String name) {
+        return ResponseEntity.ok(productService.searchProductsByName(name));
+    }
+
     // Public endpoint: Get specific product details
     @GetMapping("/public/{id}")
     public ResponseEntity<ProductDto> getProductById(@PathVariable Long id) {

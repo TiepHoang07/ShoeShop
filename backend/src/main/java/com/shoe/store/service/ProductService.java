@@ -64,6 +64,13 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
+    public List<ProductDto> searchProductsByName(String name) {
+        return productRepository.findByNameContainingIgnoreCase(name)
+                .stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
+    }
+
     public ProductDto getProductById(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Product not found"));
